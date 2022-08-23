@@ -1,0 +1,3 @@
+*.ser
+bin/*
+.settings/*
