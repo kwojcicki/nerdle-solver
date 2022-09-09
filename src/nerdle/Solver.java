@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Solver {
@@ -40,11 +41,18 @@ public class Solver {
 		GENERATE, PLAY, PLAY_OLD, TEST, STATS;
 	}
 
+	private static Scanner scanner;
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		MODE mode = MODE.PLAY;
 		final String listFilename = "list-" + GAME_SIZE + ".ser";
 		final String mapFilename = "map-" + GAME_SIZE + ".ser";
 
+		scanner = new Scanner(System.in);
+		System.out.println("Please enter what mode you wish to enter: " + 
+				Arrays.stream(MODE.values()).map(Enum::toString).collect(Collectors.joining(",")));
+		
+		mode = MODE.valueOf(scanner.next());
+		
 		if(mode == MODE.GENERATE) {
 			List<String> solutions = generateSolutions();
 			int[][] map = generateMap(solutions);
@@ -95,6 +103,8 @@ public class Solver {
 				System.out.println(map);
 			}
 		}
+		
+		scanner.close();
 	}
 
 	public static void play(int[][] diffs, List<String> solutions, MODE mode) {
@@ -107,7 +117,6 @@ public class Solver {
 			}
 		}
 
-		Scanner scanner = new Scanner(System.in);
 		while(true) {
 			System.out.println("Possible answers: " + solutionSet.size());
 			String optimal = mode == MODE.PLAY ? guess(diffs, solutions, solutionSet) 
@@ -132,8 +141,6 @@ public class Solver {
 							hintTransformed
 					);
 		}
-
-		scanner.close();
 	}
 
 	public static int transform(String hint) {
@@ -208,7 +215,7 @@ public class Solver {
 			}
 		}
 
-		// yellow
+		// purple
 		for(int i = 0; i < xC.length; i++) {
 			if(diffs[i] == GREEN) continue;
 			for(int j = 0; j < otherC.length; j++) {
@@ -287,11 +294,6 @@ public class Solver {
 			}
 		}
 
-//		for(long[] d: distribution) {
-//			System.out.println(Arrays.toString(d));
-//		}
-
-		// System.out.println("Optimal: " + optimal + " , entropy: " + maxEntropy);
 		return optimal.getChars();
 	}
 
@@ -386,11 +388,6 @@ class Solution {
 	@Override
 	public String toString() {
 		return Arrays.toString(chars);
-	}
-
-	public boolean valid(Object object) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	public static boolean valid(char[] curr) {
